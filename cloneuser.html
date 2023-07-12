@@ -1,0 +1,53 @@
+<apex:page standardController="User" lightningStylesheets="true" extensions="CloneUserController">
+    <apex:form >
+        <apex:pageBlock title="Clone User">
+            <!-- Main User Details -->
+            <apex:pageBlockSection title="Main User Details">
+                <apex:outputField label="Name" value="{!User.Name}" />
+                <apex:outputField label="Profile" value="{!User.Profile.Name}" />
+                <apex:outputField label="Role" value="{!User.UserRole.Name}" />
+                <apex:pageBlockSectionItem>
+                    <apex:outputLabel value="Permission Sets" />
+                    <apex:outputPanel>
+                        <apex:repeat value="{!assignedPermissionSets}" var="psa">
+                            <apex:outputText value="{!psa.PermissionSet.Label}" />
+                            <br />
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <!-- Clone User Section -->
+            <apex:pageBlockSection id="numsec" title="Options">
+                <apex:inputText value="{!numberOfDuplicates}" label="Number of Duplicates" />
+                <apex:commandButton value="Clone" action="{!cloneUsers}" rerender="cloneSection, cloneMessage, numsec"  rendered="{!showCloneUserButton}" />
+                <apex:outputText value="{!cloneMessage}" id="cloneMessage" />
+            </apex:pageBlockSection>
+
+            <!-- Spacing -->
+            <div style="margin-top: 50px;">&nbsp;</div>
+
+            <!-- Cloned User Sections -->
+            <apex:outputPanel id="cloneSection">
+                <apex:outputPanel rendered="{!showClonedUsers}">
+                    <apex:variable var="index" value="{!1}" />
+                    <apex:repeat value="{!clonedUsers}" var="clonedUser">
+                        <apex:pageBlockSection title="Cloned User #{!index}">
+                            <apex:inputText value="{!clonedUser.FirstName}" />
+                            <apex:inputText value="{!clonedUser.LastName}" />
+                            <apex:inputText value="{!clonedUser.Username}" html-placeholder="example@customtruck.com" />
+                            <apex:inputText value="{!clonedUser.Email}" html-placeholder="example@customtruck.com" />
+<!-- manager input field.. has a lookup icon -->
+                            <apex:inputField value="{!clonedUser.ManagerId}" />
+                            <apex:inputText value="{!clonedUser.EmployeeNumber}" />
+                            <apex:variable var="index" value="{!index + 1}" />
+                        </apex:pageBlockSection>
+                    </apex:repeat>
+                    <!-- Spacing -->
+            <div style="margin-top: 50px;">&nbsp;</div>
+                    <apex:commandButton value="Create Users" action="{!createUsers}" rerender="cloneSection, cloneMessage" rendered="{!showCreateUsersButton}" />
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
